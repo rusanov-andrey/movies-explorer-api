@@ -7,7 +7,7 @@ module.exports.validator = {
   user: {
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
   },
   movie: {
     name: Joi.string().required().min(2).max(30),

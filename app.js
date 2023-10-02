@@ -1,39 +1,37 @@
+/* eslint-disable no-console */
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
 const { errors } = require('celebrate');
 
+const limiter = require('./config/rate_limit');
+
 const auth = require('./middlewares/auth');
-const userRouter = require('./routes/users');
-const movieRouter = require('./routes/movies');
+const routes = require('./routes');
 const { createUser, login, logout } = require('./controllers/users');
 const { postSigninValidation, postSignupValidation } = require('./middlewares/auth_validation');
 const { NotFoundError } = require('./utils/error');
 const errorHandler = require('./middlewares/error_handler');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { DEFAULT_DATABASE_NAME, TEST_DATABASE_NAME } = require('./config/database');
+
+console.log(process.env);
 
 const { NODE_ENV } = process.env;
-let DATABASE = 'mongodb://127.0.0.1:27017/moviedb';
+let { DATABASE = DEFAULT_DATABASE_NAME } = process.env;
 if (NODE_ENV === 'test') {
-  DATABASE = 'mongodb://127.0.0.1:27017/test_moviedb';
+  DATABASE = TEST_DATABASE_NAME;
 }
 
 const app = express();
 
 mongoose.connect(DATABASE, {
   useNewUrlParser: true,
-});
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
 app.use(requestLogger);
@@ -46,8 +44,7 @@ app.post('/api/signin', postSigninValidation(), login);
 app.post('/api/signup', postSignupValidation(), createUser);
 
 app.use(auth);
-app.use(userRouter);
-app.use(movieRouter);
+app.use(routes);
 app.post('/api/signout', logout);
 app.use((req, res, next) => {
   next(new NotFoundError());

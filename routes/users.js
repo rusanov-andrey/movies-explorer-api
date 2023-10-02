@@ -1,7 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 const router = require('express').Router();
 
-const v = require('../validators/validators').validator;
 const {
   getCurrentUser, updateProfile,
 } = require('../controllers/users');
@@ -9,7 +8,7 @@ const {
 router.get('/api/users/me', getCurrentUser);
 router.patch('/api/users/me', celebrate({
   body: Joi.object().keys({
-    name: v.user.name,
+    name: Joi.string().min(2).max(30),
     email: Joi.string().email(),
   }).unknown(true),
 }), updateProfile);
