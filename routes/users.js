@@ -17,7 +17,7 @@ router.get('/api/users/me', getCurrentUser);
 router.patch('/api/users/me', celebrate({
   body: Joi.object().keys({
     name: v.user.name,
-    email: v.user.email,
+    email: Joi.string().email(),
   }).unknown(true),
 }), updateProfile);
 
