@@ -47,13 +47,13 @@ app.use(bodyParser.json());
 app.use(checkOrijin);
 app.use(checkHeaders);
 
-app.post('/signin', postSigninValidation(), login);
-app.post('/signup', postSignupValidation(), createUser);
+app.post('/api/signin', postSigninValidation(), login);
+app.post('/api/signup', postSignupValidation(), createUser);
 
 app.use(auth);
 app.use(userRouter);
 app.use(movieRouter);
-app.post('/signout', logout);
+app.post('/api/signout', logout);
 app.use((req, res, next) => {
   next(new NotFoundError());
 });

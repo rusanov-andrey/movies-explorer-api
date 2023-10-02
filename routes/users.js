@@ -13,8 +13,8 @@ const {
     password: v.user.password,
   }),
 }), createUser); */
-router.get('/users/me', getCurrentUser);
-router.patch('/users/me', celebrate({
+router.get('/api/users/me', getCurrentUser);
+router.patch('/api/users/me', celebrate({
   body: Joi.object().keys({
     name: v.user.name,
     email: v.user.email,

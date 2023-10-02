@@ -6,8 +6,8 @@ const {
   createMovie, getMovies, deleteMovie,
 } = require('../controllers/movies');
 
-router.get('/movies', getMovies);
-router.post('/movies', celebrate({
+router.get('/api/movies', getMovies);
+router.post('/api/movies', celebrate({
   body: Joi.object().keys({
     country: v.movie.country,
     director: v.movie.director,
@@ -22,6 +22,6 @@ router.post('/movies', celebrate({
     nameEN: v.movie.nameEN,
   }),
 }), createMovie);
-router.delete('/movies/:movieId', deleteMovie);
+router.delete('/api/movies/:movieId', deleteMovie);
 
 module.exports = router;
