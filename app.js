@@ -20,9 +20,15 @@ const { checkOrijin, checkHeaders } = require('./middlewares/cors');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
+const { NODE_ENV } = process.env;
+let DATABASE = 'mongodb://127.0.0.1:27017/moviedb';
+if (NODE_ENV === 'test') {
+  DATABASE = 'mongodb://127.0.0.1:27017/test_moviedb';
+}
+
 const app = express();
 
-mongoose.connect('mongodb://127.0.0.1:27017/moviedb', {
+mongoose.connect(DATABASE, {
   useNewUrlParser: true,
 });
 
@@ -57,6 +63,4 @@ app.use(errors());
 
 app.use(errorHandler);
 
-app.listen(3001, () => {
-  console.log('Server Movie started');
-});
+module.exports = app;
